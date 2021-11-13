@@ -1,0 +1,19 @@
+{
+com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
+	default: {
+		up: folder
+		down: folder
+		over: folder
+		focused: folder
+		checked: folder
+		checkedOver: folder
+		checkedFocused: folder
+		disabled: folder
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
+	default: {
+		background: panel
+	}
+}
+}
