@@ -6,8 +6,10 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import me.wooy.game.nax.player.Player;
 import me.wooy.game.nax.screen.MainScreen;
 import me.wooy.game.nax.system.DeviceSystem;
+import me.wooy.game.nax.system.VirusSystem;
 import me.wooy.game.nax.world.WorldGenerator;
 
 import java.math.BigDecimal;
@@ -30,10 +32,10 @@ public class NoAccess extends Game implements InputProcessor {
     public SpriteBatch batch;
     public static final InputMultiplexer inputMultiplexer = new InputMultiplexer();
     public static final WorldGenerator worldGenerator = new WorldGenerator(WORLD_WIDTH, WORLD_HEIGHT);
-    public static Pixmap map;
     public static OrthographicCamera mainCamera;
     public static OrthographicCamera uiCamera;
     public static Skin skin;
+    public static boolean shouldUpdate = false;
     static {
         resolutions.put(new BigDecimal("1.7"), R_16_9);
         resolutions.put(new BigDecimal("1.6"), R_5_3);
@@ -50,7 +52,21 @@ public class NoAccess extends Game implements InputProcessor {
         Gdx.input.setInputProcessor(inputMultiplexer);
         batch = new SpriteBatch();
         DeviceSystem.load();
-        worldGenerator.generate(texture -> map = texture);
+        Player.load();
+        worldGenerator.generate();
+        new Thread(() -> {
+            int round = 0;
+            while (true){
+                try {
+                    Thread.sleep(10*1000);
+                } catch (InterruptedException e) {
+                    break;
+                }
+                VirusSystem.update();
+                shouldUpdate = true;
+                System.out.println("Round: "+round++);
+            }
+        }).start();
     }
 
 

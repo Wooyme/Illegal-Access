@@ -20,12 +20,12 @@ public class Social implements Perk {
 
     @Override
     public double getSpread() {
-        return 0;
+        return 1000;
     }
 
     @Override
     public double getInfect() {
-        return 0;
+        return 1000;
     }
 
     @Override

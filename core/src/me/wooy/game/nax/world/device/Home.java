@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import me.wooy.game.nax.i18n.Local;
 import me.wooy.game.nax.world.command.Command;
 import me.wooy.game.nax.world.organization.Organization;
+import me.wooy.game.nax.world.organization.PlayerOrg;
 
 import java.util.Collections;
 import java.util.List;
@@ -47,7 +48,7 @@ public class Home implements Device {
 
     @Override
     public List<Organization> getOwners() {
-        return Collections.emptyList();
+        return Collections.singletonList(PlayerOrg.instance);
     }
 
     @Override

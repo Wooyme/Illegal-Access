@@ -11,6 +11,7 @@ public class Grid extends Array2D {
     private final float[] grid;
     private final boolean[] visibleGrid;
     private final int[] typeGrid;
+    private final int[] colorGrid;
     /** @param size amount of columns and rows. */
     public Grid(final int size) {
         this(size, size);
@@ -40,6 +41,8 @@ public class Grid extends Array2D {
         Arrays.fill(visibleGrid, false);
         typeGrid = new int[grid.length];
         Arrays.fill(typeGrid,0);
+        colorGrid = new int[grid.length];
+        Arrays.fill(colorGrid,0);
         if (grid.length != width * height) {
             throw new IllegalArgumentException("Array with length: " + grid.length
                     + " is too small or too big to store a grid with " + width + " columns and " + height + " rows.");
@@ -65,7 +68,12 @@ public class Grid extends Array2D {
     public int getType(final int x,final int y){
         return typeGrid[toIndex(x,y)];
     }
-
+    public int getColor(final int x,final int y){
+        return colorGrid[toIndex(x,y)];
+    }
+    public void setColor(final int x,final int y,int color){
+        colorGrid[toIndex(x,y)] = color;
+    }
     /** @param x column index.
      * @param y row index.
      * @param value will be set as the value in the chosen cell.

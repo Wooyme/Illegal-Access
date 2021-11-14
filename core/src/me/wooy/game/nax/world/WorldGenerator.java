@@ -6,6 +6,7 @@ import com.github.czyzby.noise4j.map.Grid;
 import com.github.czyzby.noise4j.map.generator.room.dungeon.DungeonGenerator;
 import com.github.czyzby.noise4j.map.generator.util.Generators;
 import me.wooy.game.nax.event.worldgenerate.WorldGenerateEvent;
+import me.wooy.game.nax.player.Player;
 import me.wooy.game.nax.system.DeviceSystem;
 import me.wooy.game.nax.world.device.Home;
 
@@ -39,9 +40,8 @@ public class WorldGenerator extends DungeonGenerator {
 
     }
 
-    public void generate(Consumer<Pixmap> consumer) {
+    public void generate() {
         if (generated) {
-            consumer.accept(draw());
             return;
         }
         for (Pair<Class<? extends Device>,Float> device : DEVICE_LIST) {
@@ -53,12 +53,12 @@ public class WorldGenerator extends DungeonGenerator {
         home = room;
         room.setDevice(new Home());
         room.setType(grid);
-        room.show(grid);
         executeEvent();
         ownRegions.add(room.region);
+        Player.getInstance().getOwnedDevices().add(room.device);
         generated = true;
         DeviceSystem.afterGenerate(connections,regionRoomMap);
-        consumer.accept(update());
+        System.out.println("World Generated");
     }
 
     private void executeEvent(){
@@ -128,6 +128,8 @@ public class WorldGenerator extends DungeonGenerator {
     public Pixmap update() {
         ownRegions.forEach(region -> {
             if (regionRoomMap.containsKey(region)) {
+                regionRoomMap.get(region).show(grid);
+                regionRoomMap.get(region).setType(grid);
                 Set<Integer> regions = connections.get(region);
                 Set<Room> rooms = new HashSet<>();
                 regions.forEach(r -> findRooms(r, rooms, new HashSet<>()));
@@ -148,7 +150,12 @@ public class WorldGenerator extends DungeonGenerator {
                 final int type = grid.getType(x, y);
                 if(type>0 && visible) {
                     Class<? extends Device> device = indexDeviceMap.get(type);
-                    map.drawPixel(x, y, DeviceSystem.getColor(device));
+                    final int fixedColor = grid.getColor(x,y);
+                    if(fixedColor!=0){
+                        map.drawPixel(x, y, fixedColor);
+                    }else {
+                        map.drawPixel(x, y, DeviceSystem.getColor(device));
+                    }
                 }else{
                     color.set(cell, cell, cell, 1f);
                     map.drawPixel(x, y, Color.rgba8888(color));
@@ -183,7 +190,10 @@ public class WorldGenerator extends DungeonGenerator {
     }
 
     private void showRooms(List<Room> rooms) {
-        rooms.forEach(room -> room.show(grid));
+        rooms.forEach(room ->{
+            room.show(grid);
+            room.setType(grid);
+        });
     }
 
     private void showCorridors(List<List<Point>> corridors) {

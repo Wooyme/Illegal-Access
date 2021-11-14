@@ -9,6 +9,9 @@ import com.github.czyzby.noise4j.map.generator.room.dungeon.DungeonGenerator;
 import com.github.czyzby.noise4j.map.generator.util.Generators;
 import me.wooy.game.nax.system.DeviceSystem;
 import me.wooy.game.nax.world.device.Device;
+import me.wooy.game.nax.world.organization.PlayerOrg;
+import me.wooy.game.nax.world.organization.SecurityOrg;
+
 /** Abstract base for room-generating algorithms.
  *
  * @author MJ */
@@ -224,6 +227,15 @@ public abstract class AbstractRoomGenerator extends AbstractGenerator {
             for (int x = this.x, sizeX = this.x + width; x < sizeX; x++) {
                 for (int y = this.y, sizeY = this.y + height; y < sizeY; y++) {
                     grid.setType(x, y, type);
+                    if(x == this.x || y == this.y || x==this.x+width-1 || y == this.y+height-1){
+                        if(DeviceSystem.ownedBy(device,PlayerOrg.instance)){
+                            grid.setColor(x,y,PlayerOrg.instance.getColor());
+                        }else if(DeviceSystem.ownedBy(device, SecurityOrg.instance)){
+                            grid.setColor(x,y,SecurityOrg.instance.getColor());
+                        }else if(device.getOwners().size()>0){
+                            grid.setColor(x,y,device.getOwners().get(0).getColor());
+                        }
+                    }
                 }
             }
         }

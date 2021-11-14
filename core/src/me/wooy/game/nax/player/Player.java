@@ -1,6 +1,10 @@
 package me.wooy.game.nax.player;
 
 import me.wooy.game.nax.perks.Perk;
+import me.wooy.game.nax.perks.impl.Crypto;
+import me.wooy.game.nax.perks.impl.Network;
+import me.wooy.game.nax.perks.impl.OperateSystem;
+import me.wooy.game.nax.perks.impl.Social;
 import me.wooy.game.nax.world.device.Device;
 import me.wooy.game.nax.world.organization.deepnet.DeepNet;
 
@@ -12,8 +16,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 import me.wooy.game.nax.misc.AtomicDouble;
 public class Player {
     private static final Player instance = new Player();
+
     public static Player getInstance(){
         return instance;
+    }
+    public static void load(){
+        Player.getInstance().addPerk(Crypto.instance);
+        Player.getInstance().addPerk(Network.instance);
+        Player.getInstance().addPerk(OperateSystem.instance);
+        Player.getInstance().addPerk(Social.instance);
     }
     public final AtomicDouble money = new AtomicDouble(0);
     private final List<Perk> perks = new LinkedList<>();

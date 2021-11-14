@@ -24,6 +24,7 @@ public class ChatServer implements Device{
     private final int securityLevel;
     private final int cpu;
     private final int storage;
+    private final List<Organization> owners = new ArrayList<>();
     static {
         commandList.add(Ping.instance);
         commandList.add(Talk.instance);
@@ -67,7 +68,7 @@ public class ChatServer implements Device{
 
     @Override
     public List<Organization> getOwners() {
-        return null;
+        return owners;
     }
 
     @Override

@@ -3,12 +3,14 @@ package me.wooy.game.nax.screen;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.czyzby.noise4j.map.generator.room.AbstractRoomGenerator;
@@ -18,12 +20,14 @@ import me.wooy.game.nax.NoAccess;
 public class MainScreen extends ScreenAdapter implements Screen {
     private final Stage stage;
     private final Stage uiStage;
+    private final Texture worldTexture = new Texture(NoAccess.worldGenerator.update());
     public MainScreen(NoAccess noAccess){
         Viewport viewport = new FitViewport(NoAccess.WIDTH, NoAccess.HEIGHT, NoAccess.mainCamera);
         Viewport uiViewport = new FitViewport(NoAccess.WIDTH,NoAccess.HEIGHT,NoAccess.uiCamera);
         stage = new Stage(viewport,noAccess.batch);
         uiStage = new Stage(uiViewport,noAccess.batch);
-        Image worldTable = new Image(new Texture(NoAccess.map));
+        Image worldTable = new Image();
+        worldTable.setDrawable(new TextureRegionDrawable(worldTexture));
         worldTable.setSize(NoAccess.WORLD_WIDTH,NoAccess.WORLD_HEIGHT);
         DungeonGenerator.Point center = NoAccess.worldGenerator.getStart();
         System.out.println("Home: "+center.x+" "+center.y);
@@ -68,6 +72,10 @@ public class MainScreen extends ScreenAdapter implements Screen {
         stage.act();
         uiStage.draw();
         uiStage.act();
+        if(NoAccess.shouldUpdate){
+            NoAccess.shouldUpdate = false;
+            worldTexture.load(new PixmapTextureData(NoAccess.worldGenerator.update(),null,false,false));
+        }
     }
 
     @Override
@@ -76,6 +84,8 @@ public class MainScreen extends ScreenAdapter implements Screen {
         NoAccess.inputMultiplexer.removeProcessor(uiStage);
         stage.dispose();
         uiStage.dispose();
+        worldTexture.getTextureData().disposePixmap();
+        worldTexture.dispose();
     }
 
 }

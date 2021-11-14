@@ -22,6 +22,7 @@ public class CityServer implements Device{
     private final int securityLevel;
     private final int cpu;
     private final int storage;
+    private final List<Organization> owners = new ArrayList<>();
     public CityServer(int size){
         this.address = UUID.randomUUID().toString();
         securityLevel = MIN_SECURITY_LEVEL + (int) (((float) (MAX_SECURITY_LEVEL - MIN_SECURITY_LEVEL)) / ((float) (maxSize() - minSize())) * size);
@@ -61,7 +62,7 @@ public class CityServer implements Device{
 
     @Override
     public List<Organization> getOwners() {
-        return null;
+        return owners;
     }
 
     @Override

@@ -40,17 +40,25 @@ public class DeviceSystem {
         return deviceColorMap.get(device);
     }
     public static void own(Device device,Organization organization){
+        if(device instanceof Home){
+            return;
+        }
         device.getOwners().add(organization);
         NoAccess.worldGenerator.ownRegions.add(deviceRegionMap.get(device));
         if(organization instanceof PlayerOrg){
             Player.getInstance().addOwnedDevices(Collections.singleton(device));
         }
     }
+
+    public static boolean ownedBy(Device device,Organization organization){
+        return device.getOwners().contains(organization);
+    }
     
     public static List<Device> getNeighbors(Device device){
         int region = deviceRegionMap.get(device);
         Set<AbstractRoomGenerator.Room> rooms = new HashSet<>();
-        findRooms(region,rooms,new HashSet<>());
+        Set<Integer> regions = connections.get(region);
+        regions.forEach(r->findRooms(r,rooms,new HashSet<>()));
         return rooms.stream().map(it->it.device).collect(Collectors.toList());
     }
 
@@ -73,5 +81,5 @@ public class DeviceSystem {
             deviceRegionMap.put(room.device,region);
         });
     }
-    
+
 }

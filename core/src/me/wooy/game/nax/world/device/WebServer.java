@@ -31,7 +31,7 @@ public class WebServer implements Device, FileSystem {
     private final int cpu;
     private final int storage;
     private final FileSystemHelper fileSystemHelper = new FileSystemHelper();
-
+    private final List<Organization> owners = new ArrayList<>();
     static {
         commandList.add(Ping.instance);
         commandList.add(ChangeDir.instance);
@@ -90,7 +90,7 @@ public class WebServer implements Device, FileSystem {
 
     @Override
     public List<Organization> getOwners() {
-        return null;
+        return owners;
     }
 
     @Override
